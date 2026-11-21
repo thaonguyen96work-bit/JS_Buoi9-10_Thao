@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý nhân viên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100 text-slate-800 min-h-screen md:flex">
+    <!-- Sidebar -->
+    <aside class="bg-indigo-900 text-indigo-100 p-5 md:w-56 md:min-h-screen">
+      <h2 class="text-lg font-semibold text-white">Quản lý nhân viên</h2>
+      <p class="text-sm mt-1 text-indigo-200">
+        Thêm, sửa, xóa và xếp loại nhân viên theo giờ làm.
+      </p>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-4 md:p-6 min-w-0">
+      <div class="bg-white rounded-lg shadow p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h1 class="text-xl font-bold text-blue-700">Danh sách nhân viên</h1>
+          <div class="flex flex-wrap gap-2">
+            <select id="filterType" class="border rounded px-2 py-2 text-sm">
+              <option value="">Tất cả loại</option>
+              <option>Xuất sắc</option>
+              <option>Giỏi</option>
+              <option>Khá</option>
+              <option>Trung bình</option>
+            </select>
+            <input
+              id="searchBox"
+              type="text"
+              placeholder="Tìm theo loại (vd: giỏi)"
+              class="border rounded px-3 py-2 text-sm w-48"
+            />
+            <button
+              id="btnSearch"
+              class="border px-4 py-2 rounded text-sm hover:bg-slate-100"
+            >
+              Tìm
+            </button>
+            <button
+              id="btnAdd"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
+            >
+              Thêm nhân viên
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="text-blue-700 border-b">
+              <tr>
+                <th class="p-2">Tài khoản</th>
+                <th class="p-2">Họ tên</th>
+                <th class="p-2">Email</th>
+                <th class="p-2">Ngày làm</th>
+                <th class="p-2">Chức vụ</th>
+                <th class="p-2">Tổng lương</th>
+                <th class="p-2">Xếp loại</th>
+                <th class="p-2"></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="hidden fixed inset-0 bg-black/50 items-center justify-center p-4 z-10"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col"
+      >
+        <div id="modalTitle" class="px-5 py-4 border-b text-lg font-semibold">
+          Thêm nhân viên
+        </div>
+
+        <div class="p-5 space-y-3 overflow-y-auto">
+          <div>
+            <label for="tknv" class="block text-sm text-slate-500 mb-1"
+              >Tài khoản (4–6 chữ số)</label
+            >
+            <input
+              id="tknv"
+              type="text"
+              class="w-full border rounded px-3 py-2 disabled:bg-slate-100"
+            />
+            <p id="m-tknv" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="name" class="block text-sm text-slate-500 mb-1"
+              >Họ và tên</label
+            >
+            <input
+              id="name"
+              type="text"
+              class="w-full border rounded px-3 py-2"
+            />
+            <p id="m-name" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="email" class="block text-sm text-slate-500 mb-1"
+              >Email</label
+            >
+            <input
+              id="email"
+              type="text"
+              class="w-full border rounded px-3 py-2"
+            />
+            <p id="m-email" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="password" class="block text-sm text-slate-500 mb-1"
+              >Mật khẩu (6–10 ký tự, có số, chữ hoa, ký tự đặc biệt)</label
+            >
+            <input
+              id="password"
+              type="password"
+              class="w-full border rounded px-3 py-2"
+            />
+            <p id="m-password" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="datepicker" class="block text-sm text-slate-500 mb-1"
+              >Ngày làm (mm/dd/yyyy)</label
+            >
+            <input
+              id="datepicker"
+              type="text"
+              placeholder="05/13/2021"
+              class="w-full border rounded px-3 py-2"
+            />
+            <p id="m-datepicker" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="luongCB" class="block text-sm text-slate-500 mb-1"
+              >Lương cơ bản (1.000.000 – 20.000.000)</label
+            >
+            <input
+              id="luongCB"
+              type="text"
+              class="w-full border rounded px-3 py-2"
+            />
+            <p id="m-luongCB" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="chucvu" class="block text-sm text-slate-500 mb-1"
+              >Chức vụ</label
+            >
+            <select id="chucvu" class="w-full border rounded px-3 py-2">
+              <option value="">Chọn chức vụ</option>
+              <option>Giám đốc</option>
+              <option>Trưởng Phòng</option>
+              <option>Nhân Viên</option>
+            </select>
+            <p id="m-chucvu" class="text-xs text-red-600 mt-1"></p>
+          </div>
+          <div>
+            <label for="gioLam" class="block text-sm text-slate-500 mb-1"
+              >Giờ làm trong tháng (80–200)</label
+            >
+            <input
+              id="gioLam"
+              type="text"
+              class="w-full border rounded px-3 py-2"
+            />
+            <p id="m-gioLam" class="text-xs text-red-600 mt-1"></p>
+          </div>
+        </div>
+
+        <div class="px-5 py-4 border-t flex justify-end gap-2">
+          <button
+            id="btnSave"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+          >
+            Thêm người dùng
+          </button>
+          <button
+            id="btnUpdate"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+          >
+            Cập nhật
+          </button>
+          <button
+            id="btnClose"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
